@@ -1,0 +1,5 @@
+# Example TLS front for a Featherless VPS. Point DNS to the server, replace the domain.
+# Run: caddy run --config Caddyfile
+learning.example.com {
+    reverse_proxy localhost:8000
+}

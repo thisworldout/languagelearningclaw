@@ -1,0 +1,62 @@
+{
+  "description": "HTTP tool contract for OpenClaw to call the learning backend. Base URL: http://127.0.0.1:8000 (or http://api:8000 from Docker network). All requests require header X-API-Key.",
+  "tools": [
+    {
+      "name": "analyze_sentence",
+      "method": "POST",
+      "path": "/v1/analyze-sentence",
+      "headers": { "X-API-Key": "${LEARNING_API_KEY}", "Content-Type": "application/json" },
+      "body": {
+        "telegram_user_id": "integer — Telegram user id",
+        "sentence": "string",
+        "language": "optional ISO code, default en",
+        "target_language": "optional; defaults to profile"
+      },
+      "returns": "AnalyzeSentenceResponse JSON with explanation_markdown and selected_words"
+    },
+    {
+      "name": "get_profile",
+      "method": "GET",
+      "path": "/v1/profile/{telegram_user_id}",
+      "headers": { "X-API-Key": "${LEARNING_API_KEY}" }
+    },
+    {
+      "name": "set_profile",
+      "method": "POST",
+      "path": "/v1/profile",
+      "headers": { "X-API-Key": "${LEARNING_API_KEY}", "Content-Type": "application/json" },
+      "body": {
+        "telegram_user_id": "integer",
+        "target_language": "string",
+        "native_language": "string",
+        "level": "A0 | A1 | A2 | B1 | B2"
+      }
+    },
+    {
+      "name": "generate_audio",
+      "method": "POST",
+      "path": "/v1/generate-audio",
+      "headers": { "X-API-Key": "${LEARNING_API_KEY}", "Content-Type": "application/json" },
+      "body": {
+        "telegram_user_id": "integer",
+        "lesson_script": "optional string",
+        "word_lemmas": "optional list of strings — builds a short lesson if script omitted",
+        "target_language": "string"
+      },
+      "returns": "base64 MP3 in base64_audio; decode and send as Telegram voice note via OpenClaw"
+    },
+    {
+      "name": "weekly_summary",
+      "method": "GET",
+      "path": "/v1/weekly-summary/{telegram_user_id}",
+      "headers": { "X-API-Key": "${LEARNING_API_KEY}" }
+    },
+    {
+      "name": "transcribe_voice",
+      "method": "POST",
+      "path": "/v1/transcribe",
+      "headers": { "X-API-Key": "${LEARNING_API_KEY}" },
+      "body": "multipart/form-data: file=audio blob, language_hint=optional"
+    }
+  ]
+}
